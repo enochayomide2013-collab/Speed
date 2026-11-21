@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { AnimatePresence } from 'motion/react';
 import { Lock, Unlock } from 'lucide-react';
 import { GameEngine, type RaceCompletePayload } from './engine/GameEngine';
 import type { HudSnapshot } from './engine/RaceManager';
@@ -514,20 +515,23 @@ export default function App() {
             />
           )}
 
-          {activePanel === 'speedstars' && (
-            <RosterPanel
-              profile={profile}
-              onPreviewSpeedstar={(id) =>
-                engineRef.current?.updateLobbyPreview({ ...profile.loadout, speedstarId: id })
-              }
-              onSelectSpeedstar={(id) => handleSaveLoadout({ ...profile.loadout, speedstarId: id })}
-              onUnlockSpeedstar={handlePurchase}
-              onClose={() => {
-                engineRef.current?.updateLobbyPreview(profile.loadout);
-                setActivePanel('none');
-              }}
-            />
-          )}
+          <AnimatePresence>
+            {activePanel === 'speedstars' && (
+              <RosterPanel
+                key="roster-panel"
+                profile={profile}
+                onPreviewSpeedstar={(id) =>
+                  engineRef.current?.updateLobbyPreview({ ...profile.loadout, speedstarId: id })
+                }
+                onSelectSpeedstar={(id) => handleSaveLoadout({ ...profile.loadout, speedstarId: id })}
+                onUnlockSpeedstar={handlePurchase}
+                onClose={() => {
+                  engineRef.current?.updateLobbyPreview(profile.loadout);
+                  setActivePanel('none');
+                }}
+              />
+            )}
+          </AnimatePresence>
 
           {activePanel === 'maps' && (
             <MapsPanel
